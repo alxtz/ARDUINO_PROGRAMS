@@ -1,0 +1,187 @@
+#define PIN_MT_L1 6   // the trigger pin
+#define PIN_MT_L2 5
+#define PIN_MT_R1 10
+#define PIN_MT_R2 9
+byte spd = 80;
+short int mode=1;
+
+
+#define LD_COUNT 3
+#define PIN_LD_L 13   // the LED pin
+#define PIN_LD_M 12
+#define PIN_LD_R 11
+byte pin_lndec[] = {PIN_LD_L, PIN_LD_M, PIN_LD_R};
+bool LD_state[LD_COUNT];
+
+
+#define PIN_TRIG 2 
+#define PIN_ECHO 3
+
+long snr_duration;
+float distance;
+
+
+
+void setup() {
+  
+
+    pinMode(PIN_TRIG, OUTPUT);
+    digitalWrite(PIN_TRIG, LOW);
+    pinMode(PIN_ECHO, INPUT);
+
+  
+  for (byte i=0; i<LD_COUNT; i++){
+        
+  pinMode(pin_lndec[i], INPUT);     
+        digitalWrite(pin_lndec[i], HIGH);
+        LD_state[i] = LOW;}
+  
+
+  pinMode(PIN_MT_L1, OUTPUT);  
+  pinMode(PIN_MT_L2, OUTPUT);  
+  pinMode(PIN_MT_R1, OUTPUT);  
+  pinMode(PIN_MT_R2, OUTPUT);  
+  digitalWrite(PIN_MT_L1, LOW);
+  digitalWrite(PIN_MT_L2, LOW);
+  digitalWrite(PIN_MT_R1, LOW);
+  digitalWrite(PIN_MT_R2, LOW);
+
+  if (mode==1)
+  {analogWrite(PIN_MT_L1, spd);
+  analogWrite(PIN_MT_R1, spd);
+  analogWrite(PIN_MT_L2, 0);
+  analogWrite(PIN_MT_R2, 0);
+  delay(500);
+  analogWrite(PIN_MT_L1, 0);
+  analogWrite(PIN_MT_R1, 0);
+  analogWrite(PIN_MT_L2, 0);
+  analogWrite(PIN_MT_R2, 0);
+  mode++;}}
+
+
+
+
+
+
+void loop(){
+
+    digitalWrite(PIN_TRIG, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(PIN_TRIG, LOW);//叫聲納發出音波10毫秒
+    
+    snr_duration = pulseIn(PIN_ECHO,HIGH);          //測量(t2-t1)，pulsein偵測上升下降的時間
+    
+    
+    distance = (float)snr_duration * 340 / 2 / 1000000; //只在這行使snr變成float，這樣才能除
+    
+    
+         
+    if(distance<=0.05)
+  {analogWrite(PIN_MT_L1, 0);
+       analogWrite(PIN_MT_R1, 0);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);}
+
+
+
+
+else if (distance>0.05){
+
+for (byte i=0; i<LD_COUNT; i++) {LD_state[i] = digitalRead(pin_lndec[i]);}  
+
+
+  if (LD_state[1]==0){
+      
+      if (LD_state[0]==0 && LD_state[2]==1){
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, 40);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);
+       }
+    
+  
+    
+      else if (LD_state[0]==1 && LD_state[2]==0){
+       analogWrite(PIN_MT_L1, 40);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);
+       }
+
+      
+      else if (LD_state[0]==0 && LD_state[2]==0){
+       analogWrite(PIN_MT_L1, 0);
+       analogWrite(PIN_MT_R1, 0);
+       analogWrite(PIN_MT_L2, spd);
+       analogWrite(PIN_MT_R2, spd);
+       delay(600);
+       analogWrite(PIN_MT_L1, 0);
+       analogWrite(PIN_MT_R1, 0);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);
+       delay(3000);
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);
+       delay(1000);
+       
+       
+       
+       }
+
+      else if (LD_state[0]==1 && LD_state[2]==1){
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);}}
+
+else if (LD_state[1]==1){
+    
+      if (LD_state[0]==0 && LD_state[2]==1){
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, 0);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, spd);
+       }
+  
+      else if (LD_state[0]==1 && LD_state[2]==0){
+       analogWrite(PIN_MT_L1, 0);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, spd);
+       analogWrite(PIN_MT_R2, 0);
+      }
+
+      else if (LD_state[0]==0 && LD_state[2]==0){
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);
+      
+       
+       }
+    
+      else if (LD_state[0]==1 && LD_state[2]==1){
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);}}
+
+}
+
+
+else 
+{analogWrite(PIN_MT_L1, 0);
+       analogWrite(PIN_MT_R1, 0);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);}
+
+
+
+
+
+
+
+
+
+}

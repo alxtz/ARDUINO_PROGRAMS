@@ -1,0 +1,144 @@
+#define PIN_MT_L1 6   // the trigger pin
+#define PIN_MT_L2 5
+#define PIN_MT_R1 10
+#define PIN_MT_R2 9
+byte spd = 150;
+short int mode=1;
+
+
+#define LD_COUNT 3
+#define PIN_LD_L 13   // the LED pin
+#define PIN_LD_M 12
+#define PIN_LD_R 11
+byte pin_lndec[] = {PIN_LD_L, PIN_LD_M, PIN_LD_R};
+bool LD_state[LD_COUNT];
+
+
+
+void setup() {
+    
+  for (byte i=0; i<LD_COUNT; i++){
+        
+  pinMode(pin_lndec[i], INPUT);     
+        digitalWrite(pin_lndec[i], HIGH);
+        LD_state[i] = LOW;}
+  
+
+  pinMode(PIN_MT_L1, OUTPUT);  
+  pinMode(PIN_MT_L2, OUTPUT);  
+  pinMode(PIN_MT_R1, OUTPUT);  
+  pinMode(PIN_MT_R2, OUTPUT);  
+  digitalWrite(PIN_MT_L1, LOW);
+  digitalWrite(PIN_MT_L2, LOW);
+  digitalWrite(PIN_MT_R1, LOW);
+  digitalWrite(PIN_MT_R2, LOW);
+
+  if (mode==1)
+  {analogWrite(PIN_MT_L1, spd);
+  analogWrite(PIN_MT_R1, spd);
+  analogWrite(PIN_MT_L2, 0);
+  analogWrite(PIN_MT_R2, 0);
+  delay(500);
+  analogWrite(PIN_MT_L1, 0);
+  analogWrite(PIN_MT_R1, 0);
+  analogWrite(PIN_MT_L2, 0);
+  analogWrite(PIN_MT_R2, 0);
+  mode++;}}
+
+
+
+
+
+
+void loop(){
+  
+for (byte i=0; i<LD_COUNT; i++) {LD_state[i] = digitalRead(pin_lndec[i]);}  
+
+
+  if (LD_state[1]==0){
+      
+      if (LD_state[0]==0 && LD_state[2]==1){
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, 40);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);
+       }
+    
+  
+    
+      else if (LD_state[0]==1 && LD_state[2]==0){
+       analogWrite(PIN_MT_L1, 40);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);
+       }
+
+      else if (LD_state[0]==0 && LD_state[2]==0){
+       analogWrite(PIN_MT_L1, 0);
+       analogWrite(PIN_MT_R1, 0);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);
+       delay(3000);
+       
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);
+       delay(400);
+       analogWrite(PIN_MT_L1, 0);
+       analogWrite(PIN_MT_R1, 0);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);
+       delay(3000);
+       
+       }
+
+      else if (LD_state[0]==1 && LD_state[2]==1){
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);}}
+
+else if (LD_state[1]==1){
+    
+      if (LD_state[0]==0 && LD_state[2]==1){
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, 0);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, spd);
+       }
+  
+      else if (LD_state[0]==1 && LD_state[2]==0){
+       analogWrite(PIN_MT_L1, 0);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, spd);
+       analogWrite(PIN_MT_R2, 0);
+      }
+
+      else if (LD_state[0]==0 && LD_state[2]==0){
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);
+      
+       
+       }
+    
+      else if (LD_state[0]==1 && LD_state[2]==1){
+       analogWrite(PIN_MT_L1, spd);
+       analogWrite(PIN_MT_R1, spd);
+       analogWrite(PIN_MT_L2, 0);
+       analogWrite(PIN_MT_R2, 0);}}
+
+
+
+
+
+
+
+
+
+
+
+
+}
